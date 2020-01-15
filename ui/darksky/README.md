@@ -2,9 +2,9 @@
 
 ![image](https://user-images.githubusercontent.com/45823145/53432443-83d83700-39c0-11e9-9c93-db6945f24d70.png)
 
-The Dark Sky Weather Card provides current and forecasted weather conditions using the Dark Sky platform. You configure the card by passing in sensor entities from the Dark Sky Sensor platform.  
+The Dark Sky Weather Card provides current and forecasted weather conditions using the Dark Sky platform. You configure the card by passing in sensor entities from the Dark Sky Sensor platform.
 
-The card is very customizable.  You can configure many aspects of it's look and feel as well as which specific content to show by passing in customization flags and defining optional sensors.  Content can also be rearranged if desired. 
+The card is very customizable.  You can configure many aspects of it's look and feel as well as which specific content to show by passing in customization flags and defining optional sensors.  Content can also be rearranged if desired.
 
 Hovering over a forecast day will display the daily weather summary in a tooltip popup if that option has been enabled.
 
@@ -27,7 +27,7 @@ You should end up with the following folders:
 ------------------------------
 1. Add the Dark Sky sensor platform to your configuration.yaml or sensors.yaml or wherever you keep your sensor configuration.
 
-~~~~  
+~~~~
 - platform: darksky
     api_key: <Your Dark Sky API Key>
     forecast:
@@ -70,7 +70,7 @@ The next two steps are completed differently based on the version of HA you are 
 
 2. Add the card reference at the top of the configuration
 
-   **Note: Ensure type is set to module and not js**  
+   **Note: Ensure type is set to module and not js**
    **Note: /local/ points to the ```<config-dir>/www/``` dir.**
 
 ~~~~
@@ -79,10 +79,10 @@ resources:
     type: module
 ~~~~
 
-3. Add the card definition:  There are required / optional and flag entries.  
+3. Add the card definition:  There are required / optional and flag entries.
 
-Required entries must be present 
-in your configuration.  The card will not work at all if any of these lines are missing. 
+Required entries must be present
+in your configuration.  The card will not work at all if any of these lines are missing.
 ~~~~
 type: 'custom:dark-sky-weather-card'
 entity_current_conditions: sensor.dark_sky_icon
@@ -109,7 +109,7 @@ entity_summary_4: sensor.dark_sky_summary_4d
 entity_summary_5: sensor.dark_sky_summary_5d
 ~~~~
 
-Optional entries add components to the card. 
+Optional entries add components to the card.
 ***Please note entity_pop_1 to 5 lines must all be included for daily pop (probability of precip) to show in forecast
 ~~~~
 entity_sun: sun.sun
@@ -133,7 +133,7 @@ entity_pop_5: sensor.dark_sky_precip_probability_5d
 **Note:** The following entries require template sensors.  The alt_* entries are for overriding the text for the indicated slot entry. By using these you can create whatever format you like for these entries.
 ~~~~
 entity_current_text: sensor.dark_sky_current_text
-alt_daytime_high: sensor.dark_sky_alt_daytime_high 
+alt_daytime_high: sensor.dark_sky_alt_daytime_high
 alt_wind: sensor.dark_sky_alt_wind
 alt_visibility: sensor.dark_sky_alt_visibility
 alt_pop: sensor.dark_sky_alt_pop
@@ -141,11 +141,11 @@ alt_pressure: sensor.dark_sky_alt_pressure
 alt_humidity: sensor.dark_sky_alt_humidity
 ~~~~
 
-**Example template sensors:** You can call template sensors whatever you want so long as you use the same name in the card config.  
+**Example template sensors:** You can call template sensors whatever you want so long as you use the same name in the card config.
 ~~~~~
       dark_sky_current_text:
-        value_template:  {% if is_state("sensor.dark_sky_icon","clear-day") %} Clear 
-                         {% elif is_state("sensor.dark_sky_icon","clear-night") %} Clear 
+        value_template:  {% if is_state("sensor.dark_sky_icon","clear-day") %} Clear
+                         {% elif is_state("sensor.dark_sky_icon","clear-night") %} Clear
                          {% elif is_state("sensor.dark_sky_icon","rain") %} Rain
                          {% elif is_state("sensor.dark_sky_icon","snow") %} Snowy
                          {% elif is_state("sensor.dark_sky_icon","fog") %} Foggy
@@ -158,7 +158,7 @@ alt_humidity: sensor.dark_sky_alt_humidity
                          {% elif is_state("sensor.dark_sky_icon","lightning") %} Lightning
                          {% elif is_state("sensor.dark_sky_icon","thunderstorm") %} Thunderstorm
                          {% endif %}
-                         
+
       dark_sky_alt_wind:
         value_template: >-
                         {% set winddir = ['North','North-Northeast','Northeast','East-Northeast','East','East-Southeast','Southeast','South-Southeast','South','South-Southwest','Southwest','West-Southwest','West','West-Northwest','Northwest','North-Northwest','North'] %}
@@ -180,6 +180,8 @@ tooltips: true
 old_daily_format: false
 time_format: 24
 show_beaufort: true
+uom_override:
+  temperature: '°C'
 ~~~~
 
 **Flags**
@@ -207,6 +209,7 @@ show_beaufort: true
 | temp_right_pos           | **.85em** / px or em value  | Sets the right position of the Temperature.                                 |
 | temp_uom_top_margin      | **-9px** / px or em value   | Sets the top margin of the Temperature Unit of Meaure.                      |
 | temp_uom_right_margin    | **7px** / px or em value    | Sets the right margin of the Temperature Unit of Measure.                   |
+| uom_override             | **none** / length / etc.    | Allows overriding the unit of measure for various items
 | apparent_top_margin      | **39px** / px or em value   | Sets the top margin of the apparent (feels Like) temperature                |
 | apparent_right_pos       | **1em** / px or em value    | Sets the right position of the apparent (feels Like) temperature            |
 | apparent_right_margin    | **1em** / px or em value    | Sets the right margin of the apparent (feels Like) temperature              |
@@ -241,3 +244,13 @@ slots (designated r1 - r4).  There are currently 10 possible values that can be 
 - pressure
 - empty (empty slot... the slot below does not rise to fill the space)
 - remove (same as empty but the slot below rises to take the place of the slot)
+
+** UOM Override **
+--------------------------
+The `uom_override` flag allows you to specify the text for certain values which would normally be retrieved based on Home Assistant system settings.
+Some of the possible items you can specify for override are:
+- temperature (default: system temperature UOM, '°C' or '°F')
+- airpressure (default: 'hPa' or 'mbar')
+- length (default: 'mi' or 'km')
+- precipitation (default: 'mm' or 'in')
+- intensity (default: 'mm/h' or 'in/h')
